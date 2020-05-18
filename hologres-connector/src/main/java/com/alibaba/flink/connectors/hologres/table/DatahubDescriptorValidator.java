@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.flink.connectors.datahub.table;
+package com.alibaba.flink.connectors.hologres.table;
 
 import org.apache.flink.table.descriptors.ConnectorDescriptorValidator;
 import org.apache.flink.table.descriptors.DescriptorProperties;
@@ -27,8 +27,8 @@ import org.apache.flink.table.descriptors.DescriptorProperties;
 public class DatahubDescriptorValidator extends ConnectorDescriptorValidator {
 	public static final String CONNECTOR_TYPE_VALUE_DATAHUB = "datahub";
 
-	public static final String CONNECTOR_PROJECT = "connector.project";
-	public static final String CONNECTOR_TOPIC = "connector.topic";
+	public static final String CONNECTOR_DATABASE = "connector.database";
+	public static final String CONNECTOR_TABLE = "connector.table";
 	public static final String CONNECTOR_ACCESS_ID = "connector.access_id";
 	public static final String CONNECTOR_ACCESS_KEY = "connector.access_key";
 	public static final String CONNECTOR_ENDPOINT = "connector.endpoint";
@@ -43,8 +43,8 @@ public class DatahubDescriptorValidator extends ConnectorDescriptorValidator {
 	public void validate(DescriptorProperties properties) {
 		super.validate(properties);
 		properties.validateValue(CONNECTOR_TYPE, getConnectorTypeValue(), false);
-		properties.validateString(CONNECTOR_PROJECT, false, 1);
-		properties.validateString(CONNECTOR_TOPIC, false, 1);
+		properties.validateString(CONNECTOR_DATABASE, false, 1);
+		properties.validateString(CONNECTOR_TABLE, false, 1);
 		properties.validateString(CONNECTOR_ACCESS_ID, false, 1);
 		properties.validateString(CONNECTOR_ACCESS_KEY, false, 1);
 		properties.validateString(CONNECTOR_ENDPOINT, false, 1);

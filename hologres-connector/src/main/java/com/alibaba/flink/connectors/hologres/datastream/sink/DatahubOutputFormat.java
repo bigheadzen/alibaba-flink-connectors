@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.flink.connectors.datahub.datastream.sink;
+package com.alibaba.flink.connectors.hologres.datastream.sink;
 
 import org.apache.flink.api.common.io.RichOutputFormat;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
@@ -29,7 +29,7 @@ import com.alibaba.flink.connectors.common.errorcode.ConnectorErrors;
 import com.alibaba.flink.connectors.common.exception.ErrorUtils;
 import com.alibaba.flink.connectors.common.sink.HasRetryTimeout;
 import com.alibaba.flink.connectors.common.sink.Syncable;
-import com.alibaba.flink.connectors.datahub.datastream.util.DatahubClientProvider;
+import com.alibaba.flink.connectors.hologres.datastream.util.DatahubClientProvider;
 import com.aliyun.datahub.client.DatahubClient;
 import com.aliyun.datahub.client.model.PutErrorEntry;
 import com.aliyun.datahub.client.model.PutRecordsResult;

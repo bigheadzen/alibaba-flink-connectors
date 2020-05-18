@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.flink.connectors.datahub.table;
+package com.alibaba.flink.connectors.hologres.table;
 
 import org.apache.flink.table.descriptors.ConnectorDescriptorValidator;
 import org.apache.flink.table.descriptors.DescriptorProperties;

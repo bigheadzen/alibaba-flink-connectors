@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.flink.connectors.datahub.datastream.source;
+package com.alibaba.flink.connectors.hologres.datastream.source;
 
 import org.apache.flink.core.io.InputSplit;
 

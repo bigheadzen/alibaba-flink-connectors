@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.flink.connectors.datahub.table;
+package com.alibaba.flink.connectors.hologres.table;
 
 import org.apache.flink.table.factories.TableFactoryService;
 import org.apache.flink.table.factories.TableSinkFactory;
@@ -27,25 +27,25 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_ACCESS_ID;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_ACCESS_KEY;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_BATCH_SIZE;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_BATCH_WRITE_TIMEOUT_IN_MILLS;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_BUFFER_SIZE;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_ENDPOINT;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_MAX_RETRY_TIMES;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_PROJECT;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_RETRY_TIMEOUT_IN_MILLS;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_TOPIC;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_TYPE_VALUE_DATAHUB;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_ACCESS_ID;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_ACCESS_KEY;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_BATCH_SIZE;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_BATCH_WRITE_TIMEOUT_IN_MILLS;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_BUFFER_SIZE;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_DATABASE;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_ENDPOINT;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_MAX_RETRY_TIMES;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_RETRY_TIMEOUT_IN_MILLS;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_TABLE;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_TYPE_VALUE_DATAHUB;
 import static org.apache.flink.table.descriptors.ConnectorDescriptorValidator.CONNECTOR_PROPERTY_VERSION;
 import static org.apache.flink.table.descriptors.ConnectorDescriptorValidator.CONNECTOR_TYPE;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Test for {@link DatahubTableFactory}.
+ * Test for {@link HologresTableFactory}.
  */
-public class DatahubTableFactoryTest {
+public class HologresTableFactoryTest {
 	@Test
 	public void testRequiredProperties() {
 		Map<String, String> properties = getBasicProperties();
@@ -53,7 +53,7 @@ public class DatahubTableFactoryTest {
 		final TableSink<?> actual = TableFactoryService.find(TableSinkFactory.class, properties)
 				.createTableSink(properties);
 
-		assertTrue(actual instanceof DatahubTableSink);
+		assertTrue(actual instanceof HologresTableSink);
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class DatahubTableFactoryTest {
 		final TableSink<?> actual = TableFactoryService.find(TableSinkFactory.class, properties)
 				.createTableSink(properties);
 
-		assertTrue(actual instanceof DatahubTableSink);
+		assertTrue(actual instanceof HologresTableSink);
 	}
 
 	private Map<String, String> getBasicProperties() {
@@ -77,8 +77,8 @@ public class DatahubTableFactoryTest {
 
 		properties.put(CONNECTOR_TYPE, CONNECTOR_TYPE_VALUE_DATAHUB);
 		properties.put(CONNECTOR_PROPERTY_VERSION, "1");
-		properties.put(CONNECTOR_PROJECT, "myproject");
-		properties.put(CONNECTOR_TOPIC, "mytopic");
+		properties.put(CONNECTOR_DATABASE, "myproject");
+		properties.put(CONNECTOR_TABLE, "mytopic");
 		properties.put(CONNECTOR_ACCESS_ID, "myid");
 		properties.put(CONNECTOR_ACCESS_KEY, "mykey");
 		properties.put(CONNECTOR_ENDPOINT, "myendpoint");

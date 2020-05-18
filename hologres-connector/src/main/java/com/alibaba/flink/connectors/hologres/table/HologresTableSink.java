@@ -29,6 +29,11 @@ import org.apache.flink.table.types.DataType;
 import org.apache.flink.types.Row;
 
 import com.alibaba.flink.connectors.hologres.datastream.sink.DatahubOutputFormat;
+import com.alibaba.flink.connectors.hologres.datastream.util.HoloUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_BATCH_SIZE;
 import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_BATCH_WRITE_TIMEOUT_IN_MILLS;
@@ -39,26 +44,28 @@ import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValid
 /**
  * Table Sink for Datahub.
  */
-public class DatahubTableSink extends OutputFormatTableSink<Row> {
+public class HologresTableSink extends OutputFormatTableSink<Row> {
 
-	private final String project;
-	private final String topic;
+	private static final Logger LOG = LoggerFactory.getLogger(HoloUtil.class);
+
+	private final String database;
+	private final String table;
 	private final String accessId;
 	private final String accessKey;
 	private final String endpoint;
 	private final TableSchema schema;
 	private final DescriptorProperties  prop;
 
-	public DatahubTableSink(
-			String project,
-			String topic,
+	public HologresTableSink(
+			String database,
+			String table,
 			String accessId,
 			String accessKey,
 			String endpoint,
 			TableSchema schema,
 			DescriptorProperties prop) {
-		this.project = project;
-		this.topic = topic;
+		this.database = database;
+		this.table = table;
 		this.accessId = accessId;
 		this.accessKey = accessKey;
 		this.endpoint = endpoint;
@@ -78,42 +85,62 @@ public class DatahubTableSink extends OutputFormatTableSink<Row> {
 
 	@Override
 	public TableSink<Row> configure(String[] strings, TypeInformation<?>[] typeInformations) {
-		return new DatahubTableSink(project, topic, accessId, accessKey, endpoint, schema, prop);
+		return new HologresTableSink(database, table, accessId, accessKey, endpoint, schema, prop);
 	}
 
 	@Override
 	public OutputFormat<Row> getOutputFormat() {
-		RowTypeInfo flinkRowTypeInfo = new RowTypeInfo(schema.getFieldTypes(), schema.getFieldNames());
-		DatahubOutputFormat outputFormat = new DatahubOutputFormat<Row>(
-				endpoint,
-				project,
-				topic,
-				accessId,
-				accessKey,
-				flinkRowTypeInfo);
+		try {
+			LOG.info("getOutputFormat started. fe: {}, accessId: {}, database: {}, table: {}",
+					endpoint, accessId, database, table);
+			String holohubEndpoint = HoloUtil.getHolohubEndpoint(endpoint, accessId, accessKey, database);
+			holohubEndpoint = "http://" + holohubEndpoint;
 
-		if (prop.containsKey(CONNECTOR_BUFFER_SIZE)) {
-			outputFormat.setBufferSize(prop.getInt(CONNECTOR_BUFFER_SIZE));
+			LOG.info("Got holohub: {}", holohubEndpoint);
+
+			Map<String, Object> defaultValueMap = HoloUtil.getDefaultValueMap(
+					endpoint, accessId, accessKey, database, table);
+
+			String[] names = new String[schema.getFieldCount()];
+			for (int i = 0; i < schema.getFieldCount(); ++i) {
+				names[i] = schema.getFieldName(i).get().toLowerCase();
+			}
+			RowTypeInfo flinkRowTypeInfo = new RowTypeInfo(schema.getFieldTypes(), names);
+			DatahubOutputFormat outputFormat = new DatahubOutputFormat<Row>(
+					holohubEndpoint,
+					database,
+					table,
+					accessId,
+					accessKey,
+					flinkRowTypeInfo);
+
+			if (prop.containsKey(CONNECTOR_BUFFER_SIZE)) {
+				outputFormat.setBufferSize(prop.getInt(CONNECTOR_BUFFER_SIZE));
+			}
+
+			if (prop.containsKey(CONNECTOR_BATCH_SIZE)) {
+				outputFormat.setBatchSize(prop.getInt(CONNECTOR_BATCH_SIZE));
+			}
+
+			if (prop.containsKey(CONNECTOR_BATCH_WRITE_TIMEOUT_IN_MILLS)) {
+				outputFormat.setBatchWriteTimeout(prop.getLong(CONNECTOR_BATCH_WRITE_TIMEOUT_IN_MILLS));
+			}
+			if (prop.containsKey(CONNECTOR_RETRY_TIMEOUT_IN_MILLS)) {
+				outputFormat.setRetryTimeoutInMills(prop.getInt(CONNECTOR_RETRY_TIMEOUT_IN_MILLS));
+			}
+
+			if (prop.containsKey(CONNECTOR_MAX_RETRY_TIMES)) {
+				outputFormat.setMaxRetryTimes(prop.getInt(CONNECTOR_MAX_RETRY_TIMES));
+			}
+
+			outputFormat.setRecordResolver(
+					new DatahubRowRecordResolver(
+							flinkRowTypeInfo, database, table, accessId, accessKey, holohubEndpoint, defaultValueMap));
+
+			return outputFormat;
+		} catch (Exception e) {
+			LOG.error("Failed to get outputformat", e);
+			return null;
 		}
-
-		if (prop.containsKey(CONNECTOR_BATCH_SIZE)) {
-			outputFormat.setBatchSize(prop.getInt(CONNECTOR_BATCH_SIZE));
-		}
-
-		if (prop.containsKey(CONNECTOR_BATCH_WRITE_TIMEOUT_IN_MILLS)) {
-			outputFormat.setBatchWriteTimeout(prop.getLong(CONNECTOR_BATCH_WRITE_TIMEOUT_IN_MILLS));
-		}
-		if (prop.containsKey(CONNECTOR_RETRY_TIMEOUT_IN_MILLS)) {
-			outputFormat.setRetryTimeoutInMills(prop.getInt(CONNECTOR_RETRY_TIMEOUT_IN_MILLS));
-		}
-
-		if (prop.containsKey(CONNECTOR_MAX_RETRY_TIMES)) {
-			outputFormat.setMaxRetryTimes(prop.getInt(CONNECTOR_MAX_RETRY_TIMES));
-		}
-
-		outputFormat.setRecordResolver(
-				new DatahubRowRecordResolver(flinkRowTypeInfo, project, topic, accessId, accessKey, endpoint));
-
-		return outputFormat;
 	}
 }

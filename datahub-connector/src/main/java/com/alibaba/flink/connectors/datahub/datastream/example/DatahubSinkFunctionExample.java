@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-package com.alibaba.flink.connectors.datahub.datastream.example;
+package com.alibaba.flink.connectors.hologres.datastream.example;
 
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
-import com.alibaba.flink.connectors.datahub.datastream.sink.DatahubRecordResolver;
-import com.alibaba.flink.connectors.datahub.datastream.sink.DatahubSinkFunction;
+import com.alibaba.flink.connectors.hologres.datastream.sink.DatahubRecordResolver;
+import com.alibaba.flink.connectors.hologres.datastream.sink.DatahubSinkFunction;
 import com.aliyun.datahub.client.model.Field;
 import com.aliyun.datahub.client.model.FieldType;
 import com.aliyun.datahub.client.model.RecordData;

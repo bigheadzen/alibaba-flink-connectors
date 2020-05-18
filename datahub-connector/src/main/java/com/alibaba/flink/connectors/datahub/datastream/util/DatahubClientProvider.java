@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.flink.connectors.datahub.datastream.util;
+package com.alibaba.flink.connectors.hologres.datastream.util;
 
 import org.apache.flink.configuration.Configuration;
 

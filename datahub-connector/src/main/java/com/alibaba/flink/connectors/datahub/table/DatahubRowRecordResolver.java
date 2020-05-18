@@ -1,10 +1,10 @@
-package com.alibaba.flink.connectors.datahub.table;
+package com.alibaba.flink.connectors.hologres.table;
 
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.types.Row;
 
-import com.alibaba.flink.connectors.datahub.datastream.sink.DatahubRecordResolver;
-import com.alibaba.flink.connectors.datahub.datastream.util.DatahubClientProvider;
+import com.alibaba.flink.connectors.hologres.datastream.sink.DatahubRecordResolver;
+import com.alibaba.flink.connectors.hologres.datastream.util.DatahubClientProvider;
 import com.aliyun.datahub.client.DatahubClient;
 import com.aliyun.datahub.client.model.Field;
 import com.aliyun.datahub.client.model.RecordEntry;

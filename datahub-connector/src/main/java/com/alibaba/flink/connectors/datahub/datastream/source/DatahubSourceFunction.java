@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.flink.connectors.datahub.datastream.source;
+package com.alibaba.flink.connectors.hologres.datastream.source;
 
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.configuration.Configuration;
@@ -24,7 +24,7 @@ import org.apache.flink.core.io.InputSplit;
 import com.alibaba.flink.connectors.common.reader.RecordReader;
 import com.alibaba.flink.connectors.common.source.AbstractDynamicParallelSource;
 import com.alibaba.flink.connectors.common.source.SourceUtils;
-import com.alibaba.flink.connectors.datahub.datastream.util.DatahubClientProvider;
+import com.alibaba.flink.connectors.hologres.datastream.util.DatahubClientProvider;
 import com.aliyun.datahub.client.model.GetTopicResult;
 import com.aliyun.datahub.client.model.ListShardResult;
 import com.aliyun.datahub.client.model.RecordEntry;

@@ -13,4 +13,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-com.alibaba.flink.connectors.datahub.table.DatahubTableFactory
+com.alibaba.flink.connectors.hologres.table.HologresTableFactory

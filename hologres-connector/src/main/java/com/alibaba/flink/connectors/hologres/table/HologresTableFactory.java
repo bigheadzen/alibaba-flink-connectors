@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.flink.connectors.datahub.table;
+package com.alibaba.flink.connectors.hologres.table;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.table.api.TableSchema;
@@ -30,17 +30,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_ACCESS_ID;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_ACCESS_KEY;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_BATCH_SIZE;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_BATCH_WRITE_TIMEOUT_IN_MILLS;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_BUFFER_SIZE;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_ENDPOINT;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_MAX_RETRY_TIMES;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_PROJECT;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_RETRY_TIMEOUT_IN_MILLS;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_TOPIC;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_TYPE_VALUE_DATAHUB;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_ACCESS_ID;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_ACCESS_KEY;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_BATCH_SIZE;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_BATCH_WRITE_TIMEOUT_IN_MILLS;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_BUFFER_SIZE;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_DATABASE;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_ENDPOINT;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_MAX_RETRY_TIMES;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_RETRY_TIMEOUT_IN_MILLS;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_TABLE;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_TYPE_VALUE_DATAHUB;
 import static org.apache.flink.table.descriptors.ConnectorDescriptorValidator.CONNECTOR_PROPERTY_VERSION;
 import static org.apache.flink.table.descriptors.ConnectorDescriptorValidator.CONNECTOR_TYPE;
 import static org.apache.flink.table.descriptors.Schema.SCHEMA;
@@ -51,7 +51,7 @@ import static org.apache.flink.table.descriptors.Schema.SCHEMA_TYPE;
  * Factory for creating Datahub table source and sink.
  */
 @Internal
-public class DatahubTableFactory implements TableSinkFactory<Row> {
+public class HologresTableFactory implements TableSinkFactory<Row> {
 
 	public String getConnectorTypeValue() {
 		return CONNECTOR_TYPE_VALUE_DATAHUB;
@@ -69,8 +69,8 @@ public class DatahubTableFactory implements TableSinkFactory<Row> {
 	public List<String> supportedProperties() {
 		List<String> properties = new ArrayList<>();
 
-		properties.add(CONNECTOR_PROJECT);
-		properties.add(CONNECTOR_TOPIC);
+		properties.add(CONNECTOR_DATABASE);
+		properties.add(CONNECTOR_TABLE);
 		properties.add(CONNECTOR_ACCESS_ID);
 		properties.add(CONNECTOR_ACCESS_KEY);
 		properties.add(CONNECTOR_ENDPOINT);
@@ -97,15 +97,15 @@ public class DatahubTableFactory implements TableSinkFactory<Row> {
 
 		TableSchema schema = params.getTableSchema(SCHEMA);
 
-		String project = params.getString(CONNECTOR_PROJECT);
-		String topic = params.getString(CONNECTOR_TOPIC);
+		String database = params.getString(CONNECTOR_DATABASE);
+		String table = params.getString(CONNECTOR_TABLE);
 		String accessId = params.getString(CONNECTOR_ACCESS_ID);
 		String accessKey = params.getString(CONNECTOR_ACCESS_KEY);
 		String endpoint = params.getString(CONNECTOR_ENDPOINT);
 
-		return new DatahubTableSink(
-				project,
-				topic,
+		return new HologresTableSink(
+				database,
+				table,
 				accessId,
 				accessKey,
 				endpoint,

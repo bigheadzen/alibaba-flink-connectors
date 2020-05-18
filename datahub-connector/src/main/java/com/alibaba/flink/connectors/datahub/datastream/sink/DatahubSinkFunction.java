@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.flink.connectors.datahub.datastream.sink;
+package com.alibaba.flink.connectors.hologres.datastream.sink;
 
 import com.alibaba.flink.connectors.common.sink.OutputFormatSinkFunction;
 

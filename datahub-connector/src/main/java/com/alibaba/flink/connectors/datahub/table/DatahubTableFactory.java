@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.flink.connectors.datahub.table;
+package com.alibaba.flink.connectors.hologres.table;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.table.api.TableSchema;
@@ -30,17 +30,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_ACCESS_ID;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_ACCESS_KEY;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_BATCH_SIZE;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_BATCH_WRITE_TIMEOUT_IN_MILLS;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_BUFFER_SIZE;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_ENDPOINT;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_MAX_RETRY_TIMES;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_PROJECT;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_RETRY_TIMEOUT_IN_MILLS;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_TOPIC;
-import static com.alibaba.flink.connectors.datahub.table.DatahubDescriptorValidator.CONNECTOR_TYPE_VALUE_DATAHUB;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_ACCESS_ID;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_ACCESS_KEY;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_BATCH_SIZE;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_BATCH_WRITE_TIMEOUT_IN_MILLS;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_BUFFER_SIZE;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_ENDPOINT;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_MAX_RETRY_TIMES;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_PROJECT;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_RETRY_TIMEOUT_IN_MILLS;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_TOPIC;
+import static com.alibaba.flink.connectors.hologres.table.DatahubDescriptorValidator.CONNECTOR_TYPE_VALUE_DATAHUB;
 import static org.apache.flink.table.descriptors.ConnectorDescriptorValidator.CONNECTOR_PROPERTY_VERSION;
 import static org.apache.flink.table.descriptors.ConnectorDescriptorValidator.CONNECTOR_TYPE;
 import static org.apache.flink.table.descriptors.Schema.SCHEMA;
