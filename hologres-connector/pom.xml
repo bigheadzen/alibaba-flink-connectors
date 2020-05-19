@@ -19,6 +19,17 @@
             <artifactId>postgresql</artifactId>
             <version>42.2.12</version>
         </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.13</version>
+        </dependency>
 		<dependency>
 			<groupId>com.aliyun.datahub</groupId>
 			<artifactId>aliyun-sdk-datahub-holo</artifactId>
@@ -188,8 +199,6 @@
                                     <exclude>io.netty:*</exclude>
                                     <exclude>org.ow2.asm:*</exclude>
                                     <!-- other third-party jars we must use -->
-                                    <exclude>commons-logging:commons-logging</exclude>
-                                    <exclude>commons-codec:commons-codec</exclude>
                                     <exclude>commons-collections:commons-collections</exclude>
                                     <exclude>org.apache.commons:commons-lang3</exclude>
                                     <!-- flink dependencies are provided -->
