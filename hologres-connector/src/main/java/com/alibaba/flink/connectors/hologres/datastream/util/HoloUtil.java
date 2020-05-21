@@ -132,6 +132,7 @@ public final class HoloUtil {
 	//    geog            | '0101000020E6100000000000000000F03F000000000000F03F'::geography
 	//
 	private static Object parseDefaultValue(String val, int type) {
+		String str = parseValueFromDefaultExpr(val);
 		switch (type) {
 			case Types.CHAR:
 			case Types.NCHAR:
@@ -140,31 +141,30 @@ public final class HoloUtil {
 			case Types.NVARCHAR:
 			case Types.LONGNVARCHAR:
 				// Parse 'xxx'::text
-				return parseValueFromDefaultExpr(val);
+				return str;
 			case Types.SMALLINT:
 			case Types.INTEGER:
 			case Types.BIGINT:
 			case Types.TINYINT:
-				return Long.parseLong(val);
+				return Long.parseLong(str);
 			case Types.NUMERIC:
 			case Types.DECIMAL:
-				return new BigDecimal(val);
+				return new BigDecimal(str);
 			case Types.FLOAT:
 			case Types.REAL:
 			case Types.DOUBLE:
-				return Double.parseDouble(val);
+				return Double.parseDouble(str);
 			case Types.BOOLEAN:
 			case Types.BIT: {
-				if (val.equalsIgnoreCase("true")) {
+				if (str.equalsIgnoreCase("true")) {
 					return true;
-				} else if (val.equalsIgnoreCase("false")) {
+				} else if (str.equalsIgnoreCase("false")) {
 					return false;
 				} else {
-					throw new RuntimeException("Invalid boolean str: " + val);
+					throw new RuntimeException("Invalid boolean str: " + str);
 				}
 			}
 			case Types.DATE: {
-				String str = parseValueFromDefaultExpr(val);
 				LocalDate ld = convertColumnToLocalDate(str);
 				ZonedDateTime startOfDay = ld.atStartOfDay().atZone(ZoneId.of("UTC"));
 				long us = startOfDay.toEpochSecond() * 1000 * 1000;
@@ -172,7 +172,6 @@ public final class HoloUtil {
 			}
 			case Types.TIMESTAMP:
 			case Types.TIMESTAMP_WITH_TIMEZONE: {
-				String str = parseValueFromDefaultExpr(val);
 				ZonedDateTime zdt = convertColumnToZonedDateTime(str);
 				long us = zdt.toEpochSecond() * 1000 * 1000 + zdt.getNano() / 1000;
 				return us;
