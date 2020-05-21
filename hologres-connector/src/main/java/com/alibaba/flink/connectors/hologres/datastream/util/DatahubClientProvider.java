@@ -24,6 +24,7 @@ import com.aliyun.datahub.client.DatahubClient;
 import com.aliyun.datahub.client.DatahubClientBuilder;
 import com.aliyun.datahub.client.auth.AliyunAccount;
 import com.aliyun.datahub.client.common.DatahubConfig;
+import com.aliyun.datahub.client.http.HttpConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,8 +54,9 @@ public class DatahubClientProvider extends AbstractClientProvider<DatahubClient>
 		DatahubClient datahubClient =
 				DatahubClientBuilder.newBuilder()
 						.setDatahubConfig(conf)
-						.setUserAgent("blink-normal")
+						.setHttpConfig(getHolohubHttpConfig())
 						.build();
+		datahubClient.setUserAgent("blink-normal");
 		return datahubClient;
 	}
 
@@ -65,9 +67,17 @@ public class DatahubClientProvider extends AbstractClientProvider<DatahubClient>
 		DatahubClient datahubClient =
 				DatahubClientBuilder.newBuilder()
 						.setDatahubConfig(conf)
-						.setUserAgent("blink-sts")
+						.setHttpConfig(getHolohubHttpConfig())
 						.build();
+		datahubClient.setUserAgent("blink-sts");
 		return datahubClient;
+	}
+
+	private static HttpConfig getHolohubHttpConfig() {
+		HttpConfig httpConfig = new HttpConfig();
+		httpConfig.setReadTimeout(120 * 1000);
+		httpConfig.setConnTimeout(120 * 1000);
+		return httpConfig;
 	}
 
 	@Override
