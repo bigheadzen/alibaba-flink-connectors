@@ -109,53 +109,81 @@ public final class HoloUtil {
 		String subStrWithSingleQuote = val.substring(0, pos);
 		return subStrWithSingleQuote.substring(1, subStrWithSingleQuote.length() - 1);
 	}
+	// ARRAY[]
+	// ARRAY[1, 2, 3]
+	// ARRAY[true, false, true]
+	// ARRAY['xxx'::text, 'yyy'::text, 'zzz'::text]
 
-	//    column_name   |                         column_default
+	private static String parseArrayStrFromDefaultExpr(String val) {
+		val = val.trim();
+		if (!val.startsWith("ARRAY")) {
+			throw new RuntimeException("Invalid ARRAY default str: " + val);
+		}
+		String contentStr = val.substring("ARRAY[".length(), val.length() - 1);
+		String[] strs = contentStr.split(",");
+		String[] items = new String[strs.length];
+		for (int i = 0; i < strs.length; ++i) {
+			String str = strs[i].trim();
+			str = parseValueFromDefaultExpr(str);
+			items[i] = str;
+		}
+		return String.join("\u0002", items);
+	}
+
+	//	column_name   |                         column_default
 	//-----------------+-----------------------------------------------------------------
-	//    id              |
-	//    type_text       | 'hello'::text
-	//    type_int4       | 111
-	//    type_int8       | '222'::bigint
-	//    type_bool       | true
-	//    type_date       | '2020-01-01'::date
-	//    type_float4     | '1.1'::real
-	//    type_float8     | '2.2'::double precision
-	//    type_dec        | 3.3
-	//    type_ts_tz      | '2020-01-01 02:03:04.123+08'::timestamp with time zone
-	//    type_int4_arr   | '{1,2,3}'::integer[]
-	//    type_int8_arr   | '{4,5,6}'::bigint[]
-	//    type_bool_arr   | '{t,f,t}'::boolean[]
-	//    type_text_arr   | '{xxx,yyy,zzz}'::text[]
-	//    type_float4_arr | '{1.1,2.2,3.3}'::real[]
-	//    type_float8_arr | '{4.4,5.5,6.6}'::double precision[]
-	//    geom            | '010100000000000000000000000000000000000000'::geometry
-	//    geog            | '0101000020E6100000000000000000F03F000000000000F03F'::geography
-	//
+	//	id              |
+	//	type_text       | 'hello'::text
+	//	type_int4       | 111
+	//	type_int8       | 222
+	//	type_bool       | true
+	//	type_date       | '2020-01-01'::date
+	//	type_float4     | 1.1
+	//	type_float8     | 2.2
+	//	type_dec        | 3.3
+	//	type_ts_tz      | '2020-01-01 02:03:04.123+08'::timestamp with time zone
+	//	type_int4_arr   | ARRAY[1, 2, 3]
+	//	type_int8_arr   | ARRAY[4, 5, 6]
+	//	type_bool_arr   | ARRAY[true, false, true]
+	//	type_text_arr   | ARRAY['xxx'::text, 'yyy'::text, 'zzz'::text]
+	//	type_float4_arr | ARRAY[1.1, 2.2, 3.3]
+	//	type_float8_arr | ARRAY[4.4, 5.5, 6.6]
+	//	geom            | '010100000000000000000000000000000000000000'::geometry
+	//	geog            | '0101000020E6100000000000000000F03F000000000000F03F'::geography
+	//			(18 rows)
 	private static Object parseDefaultValue(String val, int type) {
-		String str = parseValueFromDefaultExpr(val);
 		switch (type) {
 			case Types.CHAR:
 			case Types.NCHAR:
 			case Types.VARCHAR:
 			case Types.LONGVARCHAR:
 			case Types.NVARCHAR:
-			case Types.LONGNVARCHAR:
+			case Types.LONGNVARCHAR: {
 				// Parse 'xxx'::text
+				String str = parseValueFromDefaultExpr(val);
 				return str;
+			}
 			case Types.SMALLINT:
 			case Types.INTEGER:
 			case Types.BIGINT:
-			case Types.TINYINT:
+			case Types.TINYINT: {
+				String str = parseValueFromDefaultExpr(val);
 				return Long.parseLong(str);
+			}
 			case Types.NUMERIC:
-			case Types.DECIMAL:
+			case Types.DECIMAL: {
+				String str = parseValueFromDefaultExpr(val);
 				return new BigDecimal(str);
+			}
 			case Types.FLOAT:
 			case Types.REAL:
-			case Types.DOUBLE:
+			case Types.DOUBLE: {
+				String str = parseValueFromDefaultExpr(val);
 				return Double.parseDouble(str);
+			}
 			case Types.BOOLEAN:
 			case Types.BIT: {
+				String str = parseValueFromDefaultExpr(val);
 				if (str.equalsIgnoreCase("true")) {
 					return true;
 				} else if (str.equalsIgnoreCase("false")) {
@@ -165,6 +193,7 @@ public final class HoloUtil {
 				}
 			}
 			case Types.DATE: {
+				String str = parseValueFromDefaultExpr(val);
 				LocalDate ld = convertColumnToLocalDate(str);
 				ZonedDateTime startOfDay = ld.atStartOfDay().atZone(ZoneId.of("UTC"));
 				long us = startOfDay.toEpochSecond() * 1000 * 1000;
@@ -172,6 +201,7 @@ public final class HoloUtil {
 			}
 			case Types.TIMESTAMP:
 			case Types.TIMESTAMP_WITH_TIMEZONE: {
+				String str = parseValueFromDefaultExpr(val);
 				ZonedDateTime zdt = convertColumnToZonedDateTime(str);
 				long us = zdt.toEpochSecond() * 1000 * 1000 + zdt.getNano() / 1000;
 				return us;
@@ -179,8 +209,9 @@ public final class HoloUtil {
 			case Types.TIME:
 				// Time not supported in holo
 				throw new RuntimeException("Default value not supported for Time type.");
-			case Types.ARRAY:
-				throw new RuntimeException("Default value not supported for Array type.");
+			case Types.ARRAY: {
+				return parseArrayStrFromDefaultExpr(val);
+			}
 			default:
 				throw new RuntimeException("Default value not supported for type: " + type);
 		}
